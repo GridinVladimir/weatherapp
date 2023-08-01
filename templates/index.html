@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <title>Прогноз погоды</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/33b6011748.js" crossorigin="anonymous"></script>
+</head>
+<body id="pageBody">
+    <div class="container-search">
+        <form action="/" method="post" id="weatherForm" autocomplete="off">
+            <input type="text" id="city" name="city" placeholder="Название города..." required>
+            <button type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>    
+    </div>
+
+
+        {% if weather_available %}
+            <div class="container-main" id="container-main">
+                <div class="container-header">
+                    <h2>{{ city_name }}</h2>
+                </div>
+                {% for day in weather_data %}
+                    <div class="container-secondary appear-animation">
+                        <h3>{{ day.date_label }}</h3>
+                        <div class="container-weather">
+                            <div class="condition-text">{{ day.condition_text }}</div>
+                            <div class="condition-icon">
+                                <img src={{ day.condition_icon }}>
+                            </div>
+                        </div>
+                        <div class="container-weather">
+                            <i class="fa-solid fa-temperature-high"></i> {{ day.maxtemp_c }}°C
+                            <i class="fa-solid fa-temperature-low"></i> {{ day.mintemp_c }}°C
+                        </div> 
+                        <div class="container-weather">
+                            <i class="fa-solid fa-water"></i> Влажность: {{ day.avghumidity }} %
+                            <i class="fa-solid fa-wind"></i> Скорость ветра: {{ day.maxwind_kph }} км/ч
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    <script>
+        function changeBackgroundBasedOnTime() {
+            const body = document.getElementById('pageBody');
+            const currentTime = new Date();
+            const hours = currentTime.getHours();
+            body.classList.remove('morning', 'afternoon', 'evening', 'night');
+            if (hours >= 5 && hours < 12) {
+                body.classList.add('morning');
+            } else if (hours >= 12 && hours < 17) {
+                body.classList.add('afternoon');
+            } else if (hours >= 17 && hours < 21) {
+                body.classList.add('evening');
+            } else {
+                body.classList.add('night');
+            }
+        }
+        changeBackgroundBasedOnTime();
+    </script>
+</body>
+</html>
